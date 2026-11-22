@@ -13,15 +13,19 @@ import { getNotes } from "@/lib/api";
 import NoteForm from "@/components/NoteForm/NoteForm";
 import { QUERY_KEY_NOTES } from "@/constants";
 
-const App = () => {
+interface NotesClientProps {
+  tag?: string;
+}
+
+const App = ({ tag }: NotesClientProps) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 1000);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { data, error, isLoading, isSuccess, isError } = useQuery({
-    queryFn: () => getNotes(debouncedSearch, currentPage),
-    queryKey: [QUERY_KEY_NOTES, debouncedSearch, currentPage],
+    queryFn: () => getNotes(debouncedSearch, currentPage, tag),
+    queryKey: [QUERY_KEY_NOTES, debouncedSearch, currentPage, tag],
     placeholderData: keepPreviousData,
   });
 

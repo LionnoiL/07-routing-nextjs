@@ -8,25 +8,31 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-async function NotesData() {
+interface NoteFilterProps {
+  params: Promise<{ slug: string[] }>;
+}
+
+async function NotesData({ params }: NoteFilterProps) {
   const queryClient = new QueryClient();
+  const { slug } = await params;
+  const tag = slug[0].toLowerCase() === "all" ? undefined : slug[0];
 
   await queryClient.prefetchQuery({
-    queryKey: [QUERY_KEY_NOTES, "", 1],
-    queryFn: () => getNotes("", 1),
+    queryKey: [QUERY_KEY_NOTES, "", 1, tag],
+    queryFn: () => getNotes("", 1, tag),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotesClient />
+      <NotesClient tag={tag} />
     </HydrationBoundary>
   );
 }
 
-export default function NotesPage() {
+export default function NotesPage({ params }: NoteFilterProps) {
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <NotesData />
+      <NotesData params={params} />
     </Suspense>
   );
 }

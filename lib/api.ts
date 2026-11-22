@@ -19,15 +19,23 @@ const API = axios.create({
 export const getNotes = async (
   search: string,
   page: number,
+  tag?: string,
 ): Promise<NotesResponse> => {
+  const params = {
+    search,
+    page,
+    perPage: 12,
+    tag: tag && tag.toLowerCase() !== "all" ? tag : undefined,
+  };
+
   const { data } = await API.get<NotesResponse>("/notes", {
-    params: {
-      search,
-      page,
-      perPage: 12,
-    },
+    params,
   });
   return data;
+};
+
+export const getTags = async (): Promise<string[]> => {
+  return ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 };
 
 export const createNote = async (payload: CreateNote): Promise<Note> => {
