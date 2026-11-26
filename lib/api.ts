@@ -9,7 +9,8 @@ interface NotesResponse {
 }
 
 const API = axios.create({
-  baseURL: "https://notehub-public.goit.study/api",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_URL ?? "https://notehub-public.goit.study/api",
   headers: {
     "Content-Type": "application/json",
     Authorization: "Bearer " + apiKey,
